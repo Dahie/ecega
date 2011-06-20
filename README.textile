@@ -1,0 +1,11 @@
+h1. ecega - Energy Consumption Estimation by Genetic Algorithm
+
+Java-Project based on Jenetics-Library for calculating Genetic Algorithms.
+
+This project is based on the paper "Electrical Energy Consumption Estimation by Genetic Algorithm and Analysis of Variance":http://www.icrepq.com/icrepq07/360-azadeh.pdf by A.Azadeh, R. Tavakkoli-Moghaddam, S.Tarverdian.
+
+h2. Related Links
+
+* "private HTW-Wiki":http://wiki.htw-berlin.de/display/IMIM/Genetische+Algorithmen+zur+Optimierung+von+Solarzellen
+* "A.Azadeh, R. Tavakkoli-Moghaddam, S.Tarverdian: Electrical Energy Consumption Estimation by Genetic Algorithm and Analysis of Variance":http://www.icrepq.com/icrepq07/360-azadeh.pdf
+  
