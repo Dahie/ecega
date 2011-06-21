@@ -48,6 +48,8 @@ import javax.swing.event.ChangeListener;
  */
 public class EnergyConsumption extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1L;
+	
+	
 
 
 	public EnergyConsumption() {
