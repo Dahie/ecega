@@ -4,10 +4,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-public class ActionFactory {
-
-}
-
 
 
 /**
@@ -17,9 +13,9 @@ public class ActionFactory {
 class InitAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public InitAction(final GeometryController controller) {
+	public InitAction(final PolynomController controller) {
 		super("Init");
 		_controller = controller;
 	}
@@ -38,9 +34,9 @@ class InitAction extends AbstractAction {
 class StartAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public StartAction(final GeometryController controller) {
+	public StartAction(final PolynomController controller) {
 		super("Start");
 		_controller = controller;
 	}
@@ -59,9 +55,9 @@ class StartAction extends AbstractAction {
 class StopAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public StopAction(final GeometryController controller) {
+	public StopAction(final PolynomController controller) {
 		super("Stop");
 		_controller = controller;
 	}
@@ -80,9 +76,9 @@ class StopAction extends AbstractAction {
 class PauseAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public PauseAction(final GeometryController controller) {
+	public PauseAction(final PolynomController controller) {
 		super("Pause");
 		_controller = controller;
 	}
@@ -101,9 +97,9 @@ class PauseAction extends AbstractAction {
 class StepAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public StepAction(final GeometryController controller) {
+	public StepAction(final PolynomController controller) {
 		super("Step");
 		_controller = controller;
 	}

@@ -15,9 +15,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JPanel;
+
+import org.jscience.mathematics.number.Float64;
 
 /**
  * The panel which draws the polygons.
@@ -39,16 +42,16 @@ class DrawPanel extends JPanel {
 		);	
 	private static final Stroke DASHED = new BasicStroke(
 		1.0f, CAP_BUTT, JOIN_MITER, 1f, new float[]{6, 3}, 0f
-	);	
+	);
 	
-	private Point2D[] _sourcePolygon;
-	private Point2D[] _targetPolygon;
+	private HashMap<Integer, Float64> _sourcePolygon;
+	private Float64[] _targetPolynom;
 	
-	private final AtomicReference<AffineTransform> _populationBestTransform = 
-		new AtomicReference<AffineTransform>();
+	private final AtomicReference<Float64[]> _populationBestPolynom = 
+		new AtomicReference<Float64[]>();
 	
-	private final AtomicReference<AffineTransform> _alltimeBestTransform =
-		new AtomicReference<AffineTransform>();
+	private final AtomicReference<Float64[]> _alltimeBestPolynom =
+		new AtomicReference<Float64[]>();
 	
 	public DrawPanel() {	
 		addComponentListener(new ComponentAdapter() {
@@ -71,25 +74,27 @@ class DrawPanel extends JPanel {
 		final AffineTransform transform = AffineTransform.getScaleInstance(1.0, 1.0);
 		
 		if (_sourcePolygon != null) {
-			paint(g2d, _sourcePolygon, Color.LIGHT_GRAY, THICK, transform);
+//			TODO draw source consumption function
+//			paint(g2d, _sourcePolygon, Color.LIGHT_GRAY, THICK, transform);
 		}
 		
-		if (_targetPolygon != null) {
-			paint(g2d, _targetPolygon, Color.GREEN, DASHED, transform);
+		if (_targetPolynom != null) {
+			// TODO draw current estimation
+			/*paint(g2d, _targetPolynom, Color.GREEN, DASHED, transform);
 			
-			AffineTransform at = _alltimeBestTransform.get();
+			AffineTransform at = _alltimeBestPolynom.get();
 			if (at != null) {
-				paint(g2d, _targetPolygon, Color.GREEN, THICK, at);
+				paint(g2d, _targetPolynom, Color.GREEN, THICK, at);
 			} else {
-				paint(g2d, _targetPolygon, Color.GREEN, THICK, transform);
+				paint(g2d, _targetPolynom, Color.GREEN, THICK, transform);
 			}
 			
-			at = _populationBestTransform.get();
+			at = _populationBestPolynom.get();
 			if (at != null) {
-				paint(g2d, _targetPolygon, Color.BLUE, THIN,  at);
+				paint(g2d, _targetPolynom, Color.BLUE, THIN,  at);
 			} else {
-				paint(g2d, _targetPolygon, Color.BLUE, THIN, transform);
-			}
+				paint(g2d, _targetPolynom, Color.BLUE, THIN, transform);
+			}*/
 		}
 	}
 	
@@ -134,20 +139,20 @@ class DrawPanel extends JPanel {
 		graphics.setStroke(oldStroke);
 	}
 	
-	public void setSourcePolygon(final Point2D[] polygon) {
+	public void setSourceMap(final HashMap<Integer, Float64> polygon) {
 		_sourcePolygon = polygon;
 	}
 	
-	public void setTargetPolygon(final Point2D[] polygon) {
-		_targetPolygon = polygon;
+	public void setTargetPolygon(final Float64[] polygon) {
+		_targetPolynom = polygon;
 	}
 	
-	public void setPopulationBestTransform(final AffineTransform transform) {
-		_populationBestTransform.set(transform);
+	public void setPopulationBestTransform(final Float64[] transform) {
+		_populationBestPolynom.set(transform);
 	}
 	
-	public void setAlltimeBestTransform(final AffineTransform transform) {
-		_alltimeBestTransform.set(transform);
+	public void setAlltimeBestTransform(final Float64[] transform) {
+		_alltimeBestPolynom.set(transform);
 	}
 	
 }
