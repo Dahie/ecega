@@ -44,7 +44,7 @@ class DrawPanel extends JPanel {
 		1.0f, CAP_BUTT, JOIN_MITER, 1f, new float[]{6, 3}, 0f
 	);
 	
-	private HashMap<Integer, Float64> _sourcePolygon;
+	private EnergyDataSet _sourceConsumptionDataSet;
 	private Float64[] _targetPolynom;
 	
 	private final AtomicReference<Float64[]> _populationBestPolynom = 
@@ -73,7 +73,7 @@ class DrawPanel extends JPanel {
 		
 		final AffineTransform transform = AffineTransform.getScaleInstance(1.0, 1.0);
 		
-		if (_sourcePolygon != null) {
+		if (_sourceConsumptionDataSet != null) {
 //			TODO draw source consumption function
 //			paint(g2d, _sourcePolygon, Color.LIGHT_GRAY, THICK, transform);
 		}
@@ -139,8 +139,8 @@ class DrawPanel extends JPanel {
 		graphics.setStroke(oldStroke);
 	}
 	
-	public void setSourceMap(final HashMap<Integer, Float64> polygon) {
-		_sourcePolygon = polygon;
+	public void setSourceDataSet(final EnergyDataSet sourceDataSet) {
+		_sourceConsumptionDataSet = sourceDataSet;
 	}
 	
 	public void setTargetPolygon(final Float64[] polygon) {

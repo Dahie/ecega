@@ -38,8 +38,8 @@ class PolynomController implements StepListener {
 	
 	private GeneticAlgorithm<Float64Gene, Float64> _ga;
 	private GA.Function _function;
-	private HashMap<Integer, Float64> _source;
-	private Float64[] _target;
+	private EnergyDataSet _sourceConsumptionDataSet;
+	private Float64[] _targetPolynom;
 	private Stepable _stepable;
 	private Thread _thread;
 	private ExecutorService _threads;
@@ -50,8 +50,8 @@ class PolynomController implements StepListener {
 	private Phenotype<Float64Gene, Float64> _gaBestPhenotype;
 	private int _generation = 0;
 	
-	PolynomController(final EnergyConsumption consumption) {
-		_energyConsumptionFrame = consumption;
+	PolynomController(final EnergyConsumption consumptionFrame) {
+		_energyConsumptionFrame = consumptionFrame;
 		
 		_energyConsumptionFrame.setInitAction(_initAction);
 		_energyConsumptionFrame.setStartAction(_startAction);
@@ -68,14 +68,14 @@ class PolynomController implements StepListener {
 	}
 	
 	void init() {
-		_source = GA.getSourcePolynom();
-		_function = new GA.Function(_source, _target);
+		_sourceConsumptionDataSet = GA.getSourcePolynom();
+		_function = new GA.Function(_sourceConsumptionDataSet, _targetPolynom);
 		
 		_ga = GA.getGA(_function);
 		_ga.setPopulationSize(_populationSizeSpinnerModel.getNumber().intValue());
 		
-		_energyConsumptionFrame.setSourcePolygon(_source);
-		_energyConsumptionFrame.setTargetPolygon(_target);
+		_energyConsumptionFrame.setSourcePolygon(_sourceConsumptionDataSet);
+		_energyConsumptionFrame.setTargetPolygon(_targetPolynom);
 		
 		if (_stepable != null) {
 			_stepable.removeStepListener(this);

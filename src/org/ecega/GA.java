@@ -27,16 +27,16 @@ class GA {
 	{
 		private static final long serialVersionUID = 1L;
 	
-		private final HashMap<Integer, Float64> _source;
-		private final Float64[] _target;
+		private final EnergyDataSet _sourceConsumptionDataSet;
+		private final Float64[] _targetPolynom;
 	
 		public Function() {
 			this(null, null);
 		}
 		
-		public Function(final HashMap<Integer, Float64> source, final Float64[] target) {
-			_source = source != null ? source.clone() : source;
-			_target = target != null ? target.clone() : target;
+		public Function(final EnergyDataSet source, final Float64[] target) {
+			_sourceConsumptionDataSet = source != null ? source.clone() : source;
+			_targetPolynom = target != null ? target.clone() : target;
 		}
 	
 		@Override
@@ -47,10 +47,12 @@ class GA {
 		
 		Float64 distance(final Genotype<Float64Gene> genotype) {
 
+			// TODO calculate distance between estimated curve given by the target-polynom
+			// and the actual energy consumption dataset
 			double error = 0;
-			for (int i = 0; i < _source.length; ++i) {
+			for (int i = 0; i < _sourceConsumptionDataSet.size(); ++i) {
 	
-				error += _source[i].distance(point);
+				error += _sourceConsumptionDataSet[i].distance(point);
 			}
 	
 			return Float64.valueOf(error);
@@ -63,6 +65,9 @@ class GA {
 	
 		@Override
 		public AffineTransform convert(final Genotype<Float64Gene> genotype) {
+			
+			// TODO get rid of, prepare for polynoms
+			
 			System.out.println(genotype);
 			final double theta = genotype.getChromosome(0).getGene().doubleValue();
 			final double tx = genotype.getChromosome(1).getGene(0).doubleValue();
@@ -84,14 +89,6 @@ class GA {
 	
 	}
 	
-	
-	private static final Point2D[] SOURCE_POLYGON = new Point2D[] {
-			new Point2D.Double(-100, -100),
-			new Point2D.Double(100, -100),
-			new Point2D.Double(100, 100),
-			new Point2D.Double(-100, 100)
-		};
-	
 	private GA() {
 	}
 	
@@ -108,7 +105,7 @@ class GA {
 		);
 	}
 	
-	public static HashMap<Integer, Float64> getSourceConsumptionMap() {
+	public static EnergyDataSet getSourceConsumptionDataSet() {
 		// TODO quantized values from year/consumption chart
 		
 		return SOURCE_POLYGON;

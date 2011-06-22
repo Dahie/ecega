@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.SortedMap;
-import java.util.TreeMap;
+
+import org.jscience.mathematics.number.Float64;
 
 public class CSV {
 
-	final public SortedMap <Integer, Double> dataList = new TreeMap<Integer, Double>();
+	final public EnergyDataSet _dataSet = new EnergyDataSet();
 		
 	public static void main(String[] args) {
 		CSV c = new CSV();
@@ -27,7 +27,7 @@ public class CSV {
 				while ((zeile = data.readLine()) != null) {
 					split = zeile.split(";");
 					split[1] = split[1].replace(",", ".");
-					dataList.put(Integer.parseInt(split[0]), Double.parseDouble(split[1]));
+					_dataSet.put(Integer.parseInt(split[0]), Float64.valueOf(Double.parseDouble(split[1])));
 				}
 		} catch (FileNotFoundException e) {
 			System.out.println("Datei nicht gefunden");
@@ -36,9 +36,13 @@ public class CSV {
 		}
 	}
 	
+	public EnergyDataSet getDataSet() {
+		return this._dataSet;
+	}
+	
 	public void printData() {
-		for (Integer i : dataList.keySet()){
-			System.out.println(i + "   " + dataList.get(i));
+		for (Integer i : _dataSet.keySet()){
+			System.out.println(i + "   " + _dataSet.get(i));
 		}
 	}
 }

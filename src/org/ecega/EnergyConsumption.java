@@ -97,13 +97,13 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		_mutationProbabilitySlider.setLabelTable(model.getLables());
 	}
 	
-	void setSourcePolygon(final HashMap<Integer, Float64> consumptionFunction) {
+	void setSourcePolygon(final EnergyDataSet consumptionFunction) {
 		if (SwingUtilities.isEventDispatchThread()) {
-			((DrawPanel)_drawPanel).setSourceMap(consumptionFunction);
+			((DrawPanel)_drawPanel).setSourceDataSet(consumptionFunction);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
-					((DrawPanel)_drawPanel).setSourceMap(consumptionFunction);
+					((DrawPanel)_drawPanel).setSourceDataSet(consumptionFunction);
 				}
 			});
 		}
@@ -229,6 +229,8 @@ public class EnergyConsumption extends javax.swing.JFrame {
 	 // <editor-fold defaultstate="collapsed" descending="Generated Code">//GEN-BEGIN:initComponents
 	 private void initComponents() {
 		  java.awt.GridBagConstraints gridBagConstraints;
+		  
+		  // TODO add fields for displaying calculation distance?
 
 		  javax.swing.JSplitPane drawToolSplitPane=new javax.swing.JSplitPane();
 		  _toolBasePanel = new javax.swing.JPanel();
@@ -559,9 +561,13 @@ public class EnergyConsumption extends javax.swing.JFrame {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override public void run() {
-				final EnergyConsumption geometry = new EnergyConsumption();
-				geometry.setVisible(true);
-				new PolynomController(geometry);
+				CSV c = new CSV();
+				c.readData("energyConsumption.csv");
+				EnergyDataSet dataSet = c.getDataSet();
+				
+				final EnergyConsumption consumptionFrame = new EnergyConsumption();
+				consumptionFrame.setVisible(true);
+				new PolynomController(consumptionFrame);
 			}
 		});
 	}
