@@ -264,7 +264,7 @@ public class EnergyConsumption extends javax.swing.JFrame {
 
 		  setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-		  drawToolSplitPane.setDividerLocation(500);
+		  drawToolSplitPane.setDividerLocation(1000);
 		  drawToolSplitPane.setResizeWeight(0.5);
 
 		  _toolBasePanel.setMinimumSize(new java.awt.Dimension(200, 200));
@@ -539,11 +539,11 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		  _drawPanel.setLayout(_drawPanelLayout);
 		  _drawPanelLayout.setHorizontalGroup(
 				_drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 498, Short.MAX_VALUE)
+				.addGap(0, 1000, Short.MAX_VALUE)
 		  );
 		  _drawPanelLayout.setVerticalGroup(
 				_drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 542, Short.MAX_VALUE)
+				.addGap(0, 500, Short.MAX_VALUE)
 		  );
 
 		  drawToolSplitPane.setLeftComponent(_drawPanel);
@@ -561,6 +561,7 @@ public class EnergyConsumption extends javax.swing.JFrame {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override public void run() {
+			
 				CSV c = new CSV();
 				c.readData("energyConsumption.csv");
 				EnergyDataSet dataSet = c.getDataSet();
@@ -570,6 +571,7 @@ public class EnergyConsumption extends javax.swing.JFrame {
 				new PolynomController(consumptionFrame);
 			}
 		});
+		
 	}
 
 	 // Variables declaration - do not modify//GEN-BEGIN:variables
