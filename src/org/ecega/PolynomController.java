@@ -1,8 +1,8 @@
 package org.ecega;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,8 +18,8 @@ import org.jscience.mathematics.number.Float64;
  * @author <a href="mailto:franz.wilhelmstoetter@gmx.at">Franz Wilhelmstötter</a>
  * @version $Id: Geometry.java 826 2011-02-25 10:41:09Z fwilhelm $
  */
-class GeometryController implements StepListener {
-	private final EnergyConsumption _geometry;
+class PolynomController implements StepListener {
+	private final EnergyConsumption _energyConsumptionFrame;
 	
 	private final InitAction _initAction = new InitAction(this);
 	private final StartAction _startAction = new StartAction(this);
@@ -37,10 +37,9 @@ class GeometryController implements StepListener {
 		_mutationProbabilityRangeModel = new MutationProbabilityRangeModel(this);
 	
 	private GeneticAlgorithm<Float64Gene, Float64> _ga;
-	private AffineTransform _transform;
 	private GA.Function _function;
-	private Point2D[] _source;
-	private Point2D[] _target;
+	private HashMap<Integer, Float64> _source;
+	private Float64[] _target;
 	private Stepable _stepable;
 	private Thread _thread;
 	private ExecutorService _threads;
@@ -51,34 +50,32 @@ class GeometryController implements StepListener {
 	private Phenotype<Float64Gene, Float64> _gaBestPhenotype;
 	private int _generation = 0;
 	
-	GeometryController(final EnergyConsumption geometry) {
-		_geometry = geometry;
+	PolynomController(final EnergyConsumption consumption) {
+		_energyConsumptionFrame = consumption;
 		
-		_geometry.setInitAction(_initAction);
-		_geometry.setStartAction(_startAction);
-		_geometry.setStopAction(_stopAction);
-		_geometry.setStepAction(_stepAction);
-		_geometry.setPauseAction(_pauseAction);
+		_energyConsumptionFrame.setInitAction(_initAction);
+		_energyConsumptionFrame.setStartAction(_startAction);
+		_energyConsumptionFrame.setStopAction(_stopAction);
+		_energyConsumptionFrame.setStepAction(_stepAction);
+		_energyConsumptionFrame.setPauseAction(_pauseAction);
 		
-		_geometry.setPopulationSpinnerModel(_populationSizeSpinnerModel);
-		_geometry.setMaximalPhenotypeAgeSpinnerModel(_maximalPhenotypeAgeSpinnerModel);
-		_geometry.setOffspringFractionRangeModel(_offspringFractionRangeModel);
-		_geometry.setMutationProbabilityRangeModel(_mutationProbabilityRangeModel);
+		_energyConsumptionFrame.setPopulationSpinnerModel(_populationSizeSpinnerModel);
+		_energyConsumptionFrame.setMaximalPhenotypeAgeSpinnerModel(_maximalPhenotypeAgeSpinnerModel);
+		_energyConsumptionFrame.setOffspringFractionRangeModel(_offspringFractionRangeModel);
+		_energyConsumptionFrame.setMutationProbabilityRangeModel(_mutationProbabilityRangeModel);
 		
 		init();
 	}
 	
 	void init() {
-		_source = GA.getSourcePolygon();
-		_transform = GA.getTargetTransform();
-		_target = GA.getTargetPolygon(_transform);
+		_source = GA.getSourcePolynom();
 		_function = new GA.Function(_source, _target);
 		
 		_ga = GA.getGA(_function);
 		_ga.setPopulationSize(_populationSizeSpinnerModel.getNumber().intValue());
 		
-		_geometry.setSourcePolygon(_source);
-		_geometry.setTargetPolygon(_target);
+		_energyConsumptionFrame.setSourcePolygon(_source);
+		_energyConsumptionFrame.setTargetPolygon(_target);
 		
 		if (_stepable != null) {
 			_stepable.removeStepListener(this);
@@ -103,11 +100,11 @@ class GeometryController implements StepListener {
 		
 		_threads = Executors.newFixedThreadPool(2);
 		
-		_geometry.setTargetTransform(_transform);
-		_geometry.setPopulationBestTransform(new AffineTransform());
-		_geometry.setGABestTransform(new AffineTransform());
-		_geometry.setGeneration(0);
-		_geometry.repaint();
+		_energyConsumptionFrame.setTargetFunction(_transform);
+		_energyConsumptionFrame.setPopulationBestPolynom(new AffineTransform());
+		_energyConsumptionFrame.setGABestPolynom(new AffineTransform());
+		_energyConsumptionFrame.setGeneration(0);
+		_energyConsumptionFrame.repaint();
 		
 		_startAction.setEnabled(true);
 		_stopAction.setEnabled(false);
@@ -251,16 +248,16 @@ class GeometryController implements StepListener {
 		//Prevent from extensive repainting.
 		final long time = System.currentTimeMillis();
 		if (time - _lastRepaintTime > MIN_REPAINT_TIME) {
-			_geometry.setPopulationBestTransform(
+			_energyConsumptionFrame.setPopulationBestPolynom(
 					_function.convert(_populationBestPhenotype.getGenotype())
 				);
-			_geometry.setGABestTransform(
+			_energyConsumptionFrame.setGABestPolynom(
 					_function.convert(_gaBestPhenotype.getGenotype())
 				);
-			_geometry.repaint();
-			_geometry.setGeneration(_generation);
-			_geometry.setFitnessMean(statistics.getFitnessMean());
-			_geometry.setFitnessVariance(statistics.getFitnessVariance());
+			_energyConsumptionFrame.repaint();
+			_energyConsumptionFrame.setGeneration(_generation);
+			_energyConsumptionFrame.setFitnessMean(statistics.getFitnessMean());
+			_energyConsumptionFrame.setFitnessVariance(statistics.getFitnessVariance());
 			
 			_lastRepaintTime = time;
 			_populationBestPhenotype = null;

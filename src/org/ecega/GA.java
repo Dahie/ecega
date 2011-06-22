@@ -2,7 +2,7 @@ package org.ecega;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.Random;
+import java.util.HashMap;
 
 import org.jenetics.ExponentialScaler;
 import org.jenetics.FitnessFunction;
@@ -16,13 +16,9 @@ import org.jenetics.Optimize;
 import org.jenetics.RouletteWheelSelector;
 import org.jenetics.util.Converter;
 import org.jenetics.util.Factory;
-import org.jenetics.util.RandomRegistry;
 import org.jscience.mathematics.number.Float64;
 
-/**
- * @author <a href="mailto:franz.wilhelmstoetter@gmx.at">Franz Wilhelmstötter</a>
- * @version $Id: Geometry.java 826 2011-02-25 10:41:09Z fwilhelm $
- */
+
 class GA {
 	
 	static class Function 
@@ -31,14 +27,14 @@ class GA {
 	{
 		private static final long serialVersionUID = 1L;
 	
-		private final Point2D[] _source;
-		private final Point2D[] _target;
+		private final HashMap<Integer, Float64> _source;
+		private final Float64[] _target;
 	
 		public Function() {
 			this(null, null);
 		}
 		
-		public Function(final Point2D[] source, final Point2D[] target) {
+		public Function(final HashMap<Integer, Float64> source, final Float64[] target) {
 			_source = source != null ? source.clone() : source;
 			_target = target != null ? target.clone() : target;
 		}
@@ -50,12 +46,9 @@ class GA {
 		}
 		
 		Float64 distance(final Genotype<Float64Gene> genotype) {
-			final AffineTransform transform = convert(genotype);
-	
+
 			double error = 0;
-			Point2D point = new Point2D.Double();
 			for (int i = 0; i < _source.length; ++i) {
-				point = transform.transform(_target[i], point);
 	
 				error += _source[i].distance(point);
 			}
@@ -64,14 +57,8 @@ class GA {
 		}
 		
 		Float64 area(final Genotype<Float64Gene> genotype) {
-			final AffineTransform transform = convert(genotype);
-						
-			final Point2D[] points = new Point2D.Double[_source.length];
-			for (int i = 0; i < _source.length; ++i) {
-				points[i]  = transform.transform(_target[i], null);
-			}
-			
-			return Float64.valueOf(GeometryUtils.area(_source, points));
+			// TODO maybe check areal distance
+			return new Float64();
 		}
 	
 		@Override
@@ -121,39 +108,18 @@ class GA {
 		);
 	}
 	
-	public static Point2D[] getSourcePolygon() {
+	public static HashMap<Integer, Float64> getSourceConsumptionMap() {
+		// TODO quantized values from year/consumption chart
+		
 		return SOURCE_POLYGON;
-	}
-	
-	public static AffineTransform getTargetTransform() {
-		final Random random = RandomRegistry.getRandom();
-		final double theta = random.nextDouble()*2*Math.PI - Math.PI;
-		final double tx = random.nextInt(600) - 300;
-		final double ty = random.nextInt(600) - 300;
-		final double shx = random.nextDouble() - 0.5;
-		final double shy = random.nextDouble() - 0.5;
-		
-		final AffineTransform rotate = AffineTransform.getRotateInstance(theta);
-		final AffineTransform translate = AffineTransform.getTranslateInstance(tx, ty);
-		final AffineTransform shear = AffineTransform.getShearInstance(shx, shy);
-		
-		final AffineTransform transform = new AffineTransform();
-		transform.concatenate(shear);
-		transform.concatenate(rotate);
-		transform.concatenate(translate);
-		
-		return transform;
 	}
 	
 	public static Point2D[] getTargetPolygon(final AffineTransform transform) {	
 		final Point2D[] target = new Point2D[SOURCE_POLYGON.length];
-		try {
-			for (int i = 0; i < SOURCE_POLYGON.length; ++i) {
-				target[i]  = transform.inverseTransform(SOURCE_POLYGON[i], null);
-			}
-		} catch (Exception ignore) {
-		}
 		
+		for (int i = 0; i < SOURCE_POLYGON.length; ++i) {
+			//target[i]  = transform.inverseTransform(SOURCE_POLYGON[i], null);
+		}
 		return target;
 	}
 	

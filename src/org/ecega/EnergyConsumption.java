@@ -28,6 +28,7 @@ import java.text.NumberFormat;
 import java.util.Dictionary;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import javax.swing.Action;
@@ -40,6 +41,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.jscience.mathematics.number.Float64;
 
 
 /**
@@ -94,25 +97,25 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		_mutationProbabilitySlider.setLabelTable(model.getLables());
 	}
 	
-	void setSourcePolygon(final Point2D[] polygon) {
+	void setSourcePolygon(final HashMap<Integer, Float64> consumptionFunction) {
 		if (SwingUtilities.isEventDispatchThread()) {
-			((DrawPanel)_drawPanel).setSourcePolygon(polygon);
+			((DrawPanel)_drawPanel).setSourceMap(consumptionFunction);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
-					((DrawPanel)_drawPanel).setSourcePolygon(polygon);
+					((DrawPanel)_drawPanel).setSourceMap(consumptionFunction);
 				}
 			});
 		}
 	}
 	
-	void setTargetPolygon(final Point2D[] polygon) {
+	void setTargetPolygon(final Float64[] polynom) {
 		if (SwingUtilities.isEventDispatchThread()) {
-			((DrawPanel)_drawPanel).setTargetPolygon(polygon);
+			((DrawPanel)_drawPanel).setTargetPolygon(polynom);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
-					((DrawPanel)_drawPanel).setTargetPolygon(polygon);
+					((DrawPanel)_drawPanel).setTargetPolygon(polynom);
 				}
 			});
 		}
@@ -154,41 +157,41 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		}
 	}
 	
-	void setTargetTransform(final AffineTransform transform) {
+	void setTargetFunction(final Float64[] consumptionFunction) {
 		if (SwingUtilities.isEventDispatchThread()) {
-			((TransformPanel)_targetTransformPanel).setAffineTransform(transform);
+			((PolynomPanel)_targetTransformPanel).setPolynom(consumptionFunction);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
-					((TransformPanel)_targetTransformPanel).setAffineTransform(transform);
+					((PolynomPanel)_targetTransformPanel).setPolynom(consumptionFunction);
 				}
 			});
 		}
 	}
 	
-	void setGABestTransform(final AffineTransform transform) {
+	void setGABestPolynom(final Float64[] transform) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			((DrawPanel)_drawPanel).setAlltimeBestTransform(transform);
-			((TransformPanel)_gaBestTransformPanel).setAffineTransform(transform);
+			((PolynomPanel)_gaBestTransformPanel).setPolynom(transform);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
 					((DrawPanel)_drawPanel).setAlltimeBestTransform(transform);
-					((TransformPanel)_gaBestTransformPanel).setAffineTransform(transform);
+					((PolynomPanel)_gaBestTransformPanel).setPolynom(transform);
 				}
 			});
 		}
 	}
 	
-	void setPopulationBestTransform(final AffineTransform transform) {
+	void setPopulationBestPolynom(final Float64[] transform) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			((DrawPanel)_drawPanel).setPopulationBestTransform(transform);
-			((TransformPanel)_populationBestTransformPanel).setAffineTransform(transform);
+			((PolynomPanel)_populationBestTransformPanel).setPolynom(transform);
 		} else {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override public void run() {
 					((DrawPanel)_drawPanel).setPopulationBestTransform(transform);
-					((TransformPanel)_populationBestTransformPanel).setAffineTransform(transform);
+					((PolynomPanel)_populationBestTransformPanel).setPolynom(transform);
 				}
 			});
 		}
@@ -237,8 +240,8 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		  _stepButton = new javax.swing.JButton();
 		  _generationLabel = new javax.swing.JLabel();
 		  _generationTextField = new javax.swing.JFormattedTextField();
-		  _populationBestTransformPanel = new TransformPanel();
-		  _gaBestTransformPanel = new TransformPanel();
+		  _populationBestTransformPanel = new PolynomPanel();
+		  _gaBestTransformPanel = new PolynomPanel();
 		  _populationSizeLabel = new javax.swing.JLabel();
 		  _populationSizeSpinner = new javax.swing.JSpinner();
 		  _maxPTAgeLabel = new javax.swing.JLabel();
@@ -247,7 +250,7 @@ public class EnergyConsumption extends javax.swing.JFrame {
 		  _offspringFractionLabel = new javax.swing.JLabel();
 		  _populationTransformBestLabel = new javax.swing.JLabel();
 		  _gaBestTransformLabel = new javax.swing.JLabel();
-		  _targetTransformPanel = new TransformPanel();
+		  _targetTransformPanel = new PolynomPanel();
 		  _targetTransformLabel = new javax.swing.JLabel();
 		  _mutationProbabilityLabel = new javax.swing.JLabel();
 		  _mutationProbabilitySlider = new javax.swing.JSlider();
@@ -558,7 +561,7 @@ public class EnergyConsumption extends javax.swing.JFrame {
 			@Override public void run() {
 				final EnergyConsumption geometry = new EnergyConsumption();
 				geometry.setVisible(true);
-				new GeometryController(geometry);
+				new PolynomController(geometry);
 			}
 		});
 	}
@@ -606,9 +609,9 @@ public class EnergyConsumption extends javax.swing.JFrame {
 class PopulationSpinnerModel extends SpinnerNumberModel implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 	
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public PopulationSpinnerModel(final GeometryController controller) {
+	public PopulationSpinnerModel(final PolynomController controller) {
 		setMinimum(5);
 		setMaximum(Integer.MAX_VALUE);
 		setValue(20);
@@ -633,9 +636,9 @@ class MaximalPhenotypeAgeSpinnerModel extends SpinnerNumberModel
 {
 	private static final long serialVersionUID = 1L;
 	
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public MaximalPhenotypeAgeSpinnerModel(final GeometryController controller) {
+	public MaximalPhenotypeAgeSpinnerModel(final PolynomController controller) {
 		setMinimum(1);
 		setMaximum(Integer.MAX_VALUE);
 		setValue(35);
@@ -667,9 +670,9 @@ class OffspringFractionRangeModel extends DefaultBoundedRangeModel
 	private static final int MAX = 90;
 	private static final int VALUE = 20;
 
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public OffspringFractionRangeModel(final GeometryController controller) {
+	public OffspringFractionRangeModel(final PolynomController controller) {
 		setMinimum(MIN);
 		setMaximum(MAX);
 		setValue(VALUE);
@@ -712,9 +715,9 @@ class MutationProbabilityRangeModel extends DefaultBoundedRangeModel
 	private static final int MAX = 800;
 	private static final int VALUE = 50;
 	
-	private final GeometryController _controller;
+	private final PolynomController _controller;
 	
-	public MutationProbabilityRangeModel(final GeometryController controller) {
+	public MutationProbabilityRangeModel(final PolynomController controller) {
 		setMinimum(MIN);
 		setMaximum(MAX);
 		setValue(VALUE);
