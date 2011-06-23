@@ -2,7 +2,6 @@ package org.ecega;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.HashMap;
 
 import org.jenetics.ExponentialScaler;
 import org.jenetics.FitnessFunction;
@@ -23,7 +22,7 @@ class GA {
 	
 	static class Function 
 		implements FitnessFunction<Float64Gene, Float64>, 
-					Converter<Genotype<Float64Gene>, AffineTransform> 
+					Converter<Genotype<Float64Gene>, Float64[]> 
 	{
 		private static final long serialVersionUID = 1L;
 	
@@ -66,7 +65,7 @@ class GA {
 		
 		Float64 area(final Genotype<Float64Gene> genotype) {
 			// TODO maybe check areal distance
-			return new Float64();
+			return Float64.ZERO;
 		}
 	
 		@Override
@@ -75,22 +74,13 @@ class GA {
 			// TODO get rid of, prepare for polynoms
 			
 			System.out.println(genotype);
-			final double theta = genotype.getChromosome(0).getGene().doubleValue();
-			final double tx = genotype.getChromosome(1).getGene(0).doubleValue();
-			final double ty = genotype.getChromosome(1).getGene(1).doubleValue();
-			final double shx = genotype.getChromosome(2).getGene(0).doubleValue();
-			final double shy = genotype.getChromosome(2).getGene(1).doubleValue();
-	
-			final AffineTransform rotate = AffineTransform.getRotateInstance(theta);
-			final AffineTransform translate = AffineTransform.getTranslateInstance(tx, ty);
-			final AffineTransform shear = AffineTransform.getShearInstance(shx,shy);
-	
-			final AffineTransform transform = new AffineTransform();
-			transform.concatenate(shear);
-			transform.concatenate(rotate);
-			transform.concatenate(translate);
-	
-			return transform;
+			Float64[] polynom = new Float64[4];
+			Float64 a;
+			for (int i = 0; i < polynom.length; i++) {
+				a = genotype.getChromosome(i).getGene().getNumber();
+			}
+			
+			return polynom;
 		}
 	
 	}
@@ -111,20 +101,6 @@ class GA {
 		);
 	}
 	
-	public static EnergyDataSet getSourceConsumptionDataSet() {
-		// TODO quantized values from year/consumption chart
-		
-		return SOURCE_POLYGON;
-	}
-	
-	public static Point2D[] getTargetPolygon(final AffineTransform transform) {	
-		final Point2D[] target = new Point2D[SOURCE_POLYGON.length];
-		
-		for (int i = 0; i < SOURCE_POLYGON.length; ++i) {
-			//target[i]  = transform.inverseTransform(SOURCE_POLYGON[i], null);
-		}
-		return target;
-	}
 	
 	public static GeneticAlgorithm<Float64Gene, Float64> getGA(final Function function) {
 		final GeneticAlgorithm<Float64Gene, Float64> ga = 
