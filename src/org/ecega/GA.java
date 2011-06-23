@@ -35,7 +35,7 @@ class GA {
 		}
 		
 		public Function(final EnergyDataSet source, final Float64[] target) {
-			_sourceConsumptionDataSet = source != null ? source.clone() : source;
+			_sourceConsumptionDataSet = source;
 			_targetPolynom = target != null ? target.clone() : target;
 		}
 	
@@ -45,16 +45,22 @@ class GA {
 			//return area(genotype);
 		}
 		
+		/**
+		 * calculate distance between estimated curve given by the target-polynom
+		 * and the actual energy consumption dataset
+		 * @param genotype
+		 * @return
+		 */
 		Float64 distance(final Genotype<Float64Gene> genotype) {
 
-			// TODO calculate distance between estimated curve given by the target-polynom
-			// and the actual energy consumption dataset
-			double error = 0;
-			for (int i = 0; i < _sourceConsumptionDataSet.size(); ++i) {
-	
-				error += _sourceConsumptionDataSet[i].distance(point);
+			float error = 0;
+			Float64 realYearConsumption, estimatedYearConsumption;
+			for(Integer year : _sourceConsumptionDataSet.keySet()) {
+				realYearConsumption = _sourceConsumptionDataSet.get(year);
+				estimatedYearConsumption = EnergyDataSet.calculateEstimation(year, convert(genotype));
+				error += realYearConsumption.minus(estimatedYearConsumption).abs().floatValue();
 			}
-	
+			
 			return Float64.valueOf(error);
 		}
 		
@@ -64,7 +70,7 @@ class GA {
 		}
 	
 		@Override
-		public AffineTransform convert(final Genotype<Float64Gene> genotype) {
+		public Float64[] convert(final Genotype<Float64Gene> genotype) {
 			
 			// TODO get rid of, prepare for polynoms
 			
